@@ -1,9 +1,7 @@
 package router
 
 import (
-	"fmt"
-	"gin-app/database"
-	"gin-app/model"
+	"gin-app/control"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,14 +14,11 @@ func InitRouter() {
 		})
 	})
 
-	r.GET("/db", func(c *gin.Context) {
-		var user model.User
-		dbConn := database.InitDb()
-		dbConn.First(&user)
-		fmt.Println(user)
-		c.JSON(200, gin.H{
-			"user": user,
-		})
-	})
+	//分组路由
+	v1 := r.Group("v1/user")
+	{
+		v1.GET("/", control.FetchAll)
+		v1.GET("/:id", control.FetchSingleUser)
+	}
 	r.Run()
 }
